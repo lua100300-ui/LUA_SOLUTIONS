@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>루아솔루션스 기업 진단</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
+
+  :root {
+    --bg: #f9f8f6;
+    --white: #ffffff;
+    --black: #111111;
+    --navy: #1a2640;
+    --accent: #2563eb;
+    --accent-light: #eff4ff;
+    --accent-mid: #93b4f7;
+    --gray-50: #f7f7f7;
+    --gray-100: #f0f0ee;
+    --gray-200: #e2e2de;
+    --gray-400: #a0a09a;
+    --gray-600: #6b6b65;
+    --gray-800: #333330;
+    --red: #e53e3e;
+    --green: #16a34a;
+    --border: #e8e8e4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--black);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 60px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .logo-mark {
+    width: 32px;
+    height: 32px;
+    background: var(--navy);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.5px;
+  }
+  .logo-text {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: -0.3px;
+  }
+  .logo-sub {
+    font-size: 11px;
+    color: var(--gray-400);
+    font-weight: 400;
+    margin-top: 1px;
+  }
+  .header-badge {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-light);
+    padding: 5px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 56px 60px 48px;
+  }
+  .hero-inner {
+    max-width: 760px;
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 20px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 44px;
+    line-height: 1.2;
+    color: var(--navy);
+    margin-bottom: 16px;
+    font-weight: 700;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero p {
+    font-size: 15px;
+    color: var(--gray-600);
+    line-height: 1.75;
+    font-weight: 400;
+    max-width: 520px;
+  }
+  .hero-meta {
+    margin-top: 28px;
+    display: flex;
+    gap: 24px;
+  }
+  .hero-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--gray-400);
+  }
+  .hero-meta-item span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-mid);
+    display: inline-block;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 60px;
+  }
+  .progress-steps {
+    display: flex;
+    max-width: 600px;
+  }
+  .step {
+    flex: 1;
+    position: relative;
+    padding: 16px 0;
+    text-align: center;
+    cursor: default;
+  }
+  .step::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: transparent;
+    transition: background 0.3s;
+  }
+  .step.active::after { background: var(--accent); }
+  .step.done::after { background: var(--accent-mid); }
+
+  .step-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gray-200);
+    background: var(--white);
+    margin: 0 auto 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gray-400);
+    transition: all 0.3s;
+  }
+  .step.active .step-dot {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-light);
+  }
+  .step.done .step-dot {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: white;
+  }
+  .step-label {
+    font-size: 10px;
+    color: var(--gray-400);
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+  .step.active .step-label { color: var(--accent); font-weight: 600; }
+  .step.done .step-label { color: var(--navy); }
+
+  /* ── LAYOUT ── */
+  .main-layout {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 48px 60px 80px;
+  }
+
+  /* ── SECTIONS ── */
+  .section { display: none; animation: fadeUp 0.35s ease; }
+  .section.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    margin-bottom: 36px;
+  }
+  .section-num {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+  .section-desc {
+    font-size: 13px;
+    color: var(--gray-400);
+    font-weight: 400;
+  }
+  .section-divider {
+    height: 1px;
+    background: var(--border);
+    margin-top: 20px;
+  }
+
+  /* ── FIELDS ── */
+  .field-group { margin-bottom: 28px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 8px;
+    letter-spacing: 0.2px;
+  }
+  label .req { color: var(--red); margin-left: 3px; }
+
+  input[type="text"], select, textarea {
+    width: 100%;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--black);
+    padding: 11px 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+  }
+  input[type="text"]::placeholder { color: var(--gray-400); font-weight: 300; }
+  textarea::placeholder { color: var(--gray-400); font-weight: 300; }
+  input[type="text"]:focus,
+  select:focus,
+  textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
+  }
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a0a09a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+  select option { background: white; }
+  textarea { resize: vertical; min-height: 96px; line-height: 1.6; }
+
+  /* ── OPTIONS ── */
+  .options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+  }
+  .option-item { position: relative; }
+  .option-item input[type="radio"],
+  .option-item input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .option-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 13px;
+    color: var(--gray-600);
+    font-weight: 400;
+    background: var(--white);
+    user-select: none;
+  }
+  .option-label::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 4px;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    background: white;
+  }
+  .option-item input[type="radio"] + .option-label::before { border-radius: 50%; }
+  .option-item input:checked + .option-label {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-light);
+    font-weight: 500;
+  }
+  .option-item input:checked + .option-label::before {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .option-label:hover {
+    border-color: var(--accent-mid);
+    color: var(--navy);
+    background: var(--gray-50);
+  }
+
+  /* ── BUTTONS ── */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 44px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+  }
+  .btn-prev {
+    padding: 12px 24px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: var(--white);
+    color: var(--gray-600);
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .btn-prev:hover { border-color: var(--gray-400); color: var(--black); }
+  .btn-next {
+    flex: 1;
+    padding: 13px 28px;
+    background: var(--navy);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .btn-next:hover { background: var(--accent); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(37,99,235,0.25); }
+  .btn-next:active { transform: translateY(0); }
+
+  /* ── RESULT ── */
+  .result-container { display: none; }
+  .result-container.active { display: block; animation: fadeUp 0.35s ease; }
+  .result-layout {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 48px 60px 80px;
+  }
+
+  .loading-box {
+    background: var(--white);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    text-align: center;
+    padding: 80px 40px;
+  }
+  .loading-ring {
+    width: 44px;
+    height: 44px;
+    border: 3px solid var(--gray-200);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 20px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+  .loading-sub { font-size: 13px; color: var(--gray-400); }
+  .loading-dots span {
+    display: inline-block;
+    animation: blink 1.2s infinite;
+  }
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink { 0%,80%,100%{opacity:0} 40%{opacity:1} }
+
+  /* Result Header */
+  .result-header {
+    background: var(--navy);
+    border-radius: 16px;
+    padding: 40px;
+    margin-bottom: 20px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .result-header::after {
+    content: 'REPORT';
+    position: absolute;
+    right: -10px;
+    bottom: -20px;
+    font-size: 100px;
+    font-weight: 900;
+    font-family: 'Playfair Display', serif;
+    color: rgba(255,255,255,0.04);
+    pointer-events: none;
+    line-height: 1;
+  }
+  .result-company {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-mid);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .result-title { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
+  .result-date { font-size: 12px; color: rgba(255,255,255,0.45); }
+
+  .level-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 14px 22px;
+    margin-top: 24px;
+  }
+  .level-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 44px;
+    font-weight: 700;
+    line-height: 1;
+    color: #93b4f7;
+  }
+  .level-name { font-size: 14px; font-weight: 700; color: white; }
+  .level-desc { font-size: 12px; color: rgba(255,255,255,0.55); margin-top: 3px; }
+
+  /* Result Cards */
+  .result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .result-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .result-card-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gray-400);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .result-card-content {
+    font-size: 13.5px;
+    line-height: 1.85;
+    color: var(--gray-800);
+    white-space: pre-wrap;
+  }
+  .result-full {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+  .result-full-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gray-400);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .result-full-content {
+    font-size: 14px;
+    line-height: 2;
+    color: var(--gray-800);
+    white-space: pre-wrap;
+  }
+
+  /* Score */
+  .score-display {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+  .score-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1;
+  }
+  .score-total { font-size: 18px; color: var(--gray-400); font-weight: 400; }
+
+  .score-bars { }
+  .score-bar-item { margin-bottom: 10px; }
+  .score-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--gray-600);
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+  .score-bar-track {
+    height: 5px;
+    background: var(--gray-100);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .score-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-mid));
+    border-radius: 99px;
+    transition: width 1s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  /* Result Buttons */
+  .result-actions {
+    display: flex;
+    gap: 12px;
+    padding-top: 8px;
+  }
+  .btn-restart {
+    padding: 12px 24px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: var(--white);
+    color: var(--gray-600);
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .btn-restart:hover { border-color: var(--navy); color: var(--navy); }
+  .btn-print {
+    flex: 1;
+    padding: 12px 24px;
+    background: var(--navy);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .btn-print:hover { background: var(--accent); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .header { padding: 0 20px; }
+    .hero { padding: 36px 20px 32px; }
+    .hero h1 { font-size: 30px; }
+    .progress-wrap { padding: 0 20px; }
+    .main-layout { padding: 32px 20px 60px; }
+    .result-layout { padding: 32px 20px 60px; }
+    .field-row { grid-template-columns: 1fr; }
+    .result-grid { grid-template-columns: 1fr; }
+    .options-grid { grid-template-columns: 1fr 1fr; }
+    .hero-meta { display: none; }
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    .header, .progress-wrap, .hero, .result-actions { display: none; }
+    body { background: white; }
+    .result-layout { padding: 20px; }
+    .result-header { background: #1a2640 !important; -webkit-print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    <div class="logo-mark">L</div>
+    <div>
+      <div class="logo-text">LuaSolutions</div>
+      <div class="logo-sub">기업 성장 구조 설계</div>
+    </div>
+  </div>
+  <div class="header-badge">DIAGNOSIS SYSTEM</div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Enterprise Diagnosis</div>
+    <h1>기업 진단으로<br><em>성장 그림</em>을 그려드립니다</h1>
+    <p>어렴풋이 느끼던 것을 선명하게.<br>5분이면 지금 기업의 상태와 가능성을 확인하실 수 있습니다.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><span></span> 5분 소요</div>
+      <div class="hero-meta-item"><span></span> AI 분석 리포트</div>
+      <div class="hero-meta-item"><span></span> 자금·성장 전략 제시</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-steps">
+    <div class="step active" id="step-1">
+      <div class="step-dot">1</div>
+      <div class="step-label">기업 기본</div>
+    </div>
+    <div class="step" id="step-2">
+      <div class="step-dot">2</div>
+      <div class="step-label">대표 정보</div>
+    </div>
+    <div class="step" id="step-3">
+      <div class="step-dot">3</div>
+      <div class="step-label">재무 현황</div>
+    </div>
+    <div class="step" id="step-4">
+      <div class="step-dot">4</div>
+      <div class="step-label">자금·니즈</div>
+    </div>
+    <div class="step" id="step-5">
+      <div class="step-dot">5</div>
+      <div class="step-label">성장 방향</div>
+    </div>
+  </div>
+</div>
+
+<!-- FORM -->
+<div class="main-layout">
+
+  <!-- SECTION 1 -->
+  <div class="section active" id="section-1">
+    <div class="section-header">
+      <div class="section-num">Section 01</div>
+      <div class="section-title">기업 기본 정보</div>
+      <div class="section-desc">기업의 현재 상태를 파악하기 위한 기본 정보입니다</div>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-row">
+        <div>
+          <label>상호명 <span class="req">*</span></label>
+          <input type="text" id="company_name" placeholder="예) 루아솔루션스">
+        </div>
+        <div>
+          <label>대표자명 <span class="req">*</span></label>
+          <input type="text" id="ceo_name" placeholder="예) 홍길동">
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-row">
+        <div>
+          <label>업종 <span class="req">*</span></label>
+          <select id="industry">
+            <option value="">선택해주세요</option>
+            <option value="제조업">제조업</option>
+            <option value="도소매업">도소매업</option>
+            <option value="IT·소프트웨어">IT·소프트웨어</option>
+            <option value="건설업">건설업</option>
+            <option value="식품·음료">식품·음료</option>
+            <option value="바이오·헬스케어">바이오·헬스케어</option>
+            <option value="서비스업">서비스업</option>
+            <option value="유통·물류">유통·물류</option>
+            <option value="농업·수산업">농업·수산업</option>
+            <option value="기타">기타</option>
+          </select>
+        </div>
+        <div>
+          <label>사업자 유형 <span class="req">*</span></label>
+          <select id="biz_type">
+            <option value="">선택해주세요</option>
+            <option value="개인사업자">개인사업자</option>
+            <option value="법인사업자">법인사업자</option>
+            <option value="예비창업자">예비창업자</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-row">
+        <div>
+          <label>창업일 (업력)</label>
+          <select id="biz_age">
+            <option value="">선택해주세요</option>
+            <option value="예비창업">예비창업 (미창업)</option>
+            <option value="1년 미만">1년 미만</option>
+            <option value="1~3년">1~3년</option>
+            <option value="3~5년">3~5년</option>
+            <option value="5~7년">5~7년</option>
+            <option value="7~10년">7~10년</option>
+            <option value="10년 이상">10년 이상</option>
+          </select>
+        </div>
+        <div>
+          <label>직원 수 (4대보험 기준)</label>
+          <select id="employees">
+            <option value="">선택해주세요</option>
+            <option value="0명 (대표만)">0명 (대표만)</option>
+            <option value="1~4명">1~4명</option>
+            <option value="5~9명">5~9명</option>
+            <option value="10~19명">10~19명</option>
+            <option value="20~49명">20~49명</option>
+            <option value="50명 이상">50명 이상</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>주요 제품·서비스</label>
+      <input type="text" id="product" placeholder="예) 자동차 부품 제조, 식품 유통, 모바일 앱 개발 등">
+    </div>
+
+    <div class="field-group">
+      <label>주요 거래처 유형</label>
+      <div class="options-grid">
+        <div class="option-item">
+          <input type="checkbox" id="b2b" name="customer_type" value="B2B (기업 대상)">
+          <label class="option-label" for="b2b">B2B (기업 대상)</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="b2c" name="customer_type" value="B2C (개인 대상)">
+          <label class="option-label" for="b2c">B2C (개인 대상)</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="b2g" name="customer_type" value="B2G (공공·관공서)">
+          <label class="option-label" for="b2g">B2G (공공·관공서)</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="cust_export" name="customer_type" value="수출 (해외)">
+          <label class="option-label" for="cust_export">수출 (해외)</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-next" onclick="nextSection(1)">다음 단계 →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section" id="section-2">
+    <div class="section-header">
+      <div class="section-num">Section 02</div>
+      <div class="section-title">대표 정보</div>
+      <div class="section-desc">대표님의 경력과 특성이 자금 전략에 큰 영향을 미칩니다</div>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-row">
+        <div>
+          <label>대표 연령대</label>
+          <select id="ceo_age">
+            <option value="">선택해주세요</option>
+            <option value="20대">20대</option>
+            <option value="30대 초반 (30~34)">30대 초반 (30~34)</option>
+            <option value="30대 후반 (35~39)">30대 후반 (35~39)</option>
+            <option value="40대">40대</option>
+            <option value="50대 이상">50대 이상</option>
+          </select>
+        </div>
+        <div>
+          <label>해당 업종 경력</label>
+          <select id="ceo_career">
+            <option value="">선택해주세요</option>
+            <option value="1년 미만">1년 미만</option>
+            <option value="1~3년">1~3년</option>
+            <option value="3~5년">3~5년</option>
+            <option value="5~10년">5~10년</option>
+            <option value="10~20년">10~20년</option>
+            <option value="20년 이상">20년 이상</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>대표 특성 (해당 항목 모두 선택)</label>
+      <div class="options-grid">
+        <div class="option-item">
+          <input type="checkbox" id="youth" name="ceo_type" value="청년 (만 39세 이하)">
+          <label class="option-label" for="youth">청년 (만 39세 이하)</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="woman" name="ceo_type" value="여성 대표">
+          <label class="option-label" for="woman">여성 대표</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="disabled" name="ceo_type" value="장애인">
+          <label class="option-label" for="disabled">장애인</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="veteran" name="ceo_type" value="전역군인">
+          <label class="option-label" for="veteran">전역군인</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>다른 법인·사업체 보유</label>
+      <div class="options-grid">
+        <div class="option-item">
+          <input type="radio" id="other_biz_no" name="other_biz" value="없음">
+          <label class="option-label" for="other_biz_no">없음</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" id="other_biz_yes" name="other_biz" value="있음">
+          <label class="option-label" for="other_biz_yes">있음</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>신용 이슈 (해당 항목 선택)</label>
+      <div class="options-grid">
+        <div class="option-item">
+          <input type="checkbox" id="credit_ok" name="credit_issue" value="이슈 없음">
+          <label class="option-label" for="credit_ok">이슈 없음</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="credit_workout" name="credit_issue" value="워크아웃 경험">
+          <label class="option-label" for="credit_workout">워크아웃 경험</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="credit_recovery" name="credit_issue" value="개인회생 경험">
+          <label class="option-label" for="credit_recovery">개인회생 경험 (완료)</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="credit_delinquent" name="credit_issue" value="현재 연체 있음">
+          <label class="option-label" for="credit_delinquent">현재 연체 있음</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>대표 핵심 경력·강점</label>
+      <textarea id="ceo_strength" placeholder="예) 제조업 15년, 특허 3건 보유, 전 대기업 연구소 출신, 해외 영업 경험 등"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-prev" onclick="prevSection(2)">← 이전</button>
+      <button class="btn-next" onclick="nextSection(2)">다음 단계 →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section" id="section-3">
+    <div class="section-header">
+      <div class="section-num">Section 03</div>
+      <div class="section-title">재무 현황</div>
+      <div class="section-desc">정확한 숫자일수록 더 정확한 진단이 나옵니다</div>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="field-group">
+      <label>최근 1년 연매출</label>
+      <select id="revenue">
+        <option value="">선택해주세요</option>
+        <option value="1억 미만">1억 미만</option>
+        <option value="1억~3억">1억~3억</option>
+        <option value="3억~5억">3억~5억</option>
+        <option value="5억~10억">5억~10억</option>
+        <option value="10억~30억">10억~30억</option>
+        <option value="30억~50억">30억~50억</option>
+        <option value="50억~100억">50억~100억</option>
+        <option value="100억 이상">100억 이상</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label>매출 추이 (최근 3년)</label>
+      <div class="options-grid">
+        <div class="option-item">
+          <input type="radio" id="trend_up" name="revenue_trend" value="성장 중 (매년 증가)">
+          <label class="option-label" for="trend_up">성장 중 (매년 증가)</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" id="trend_flat" name="revenue_trend" value="유지 (비슷한 수준)">
+          <label class="option-label" for="trend_flat">유지 (비슷한 수준)</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" id="trend_down" name="revenue_trend" value="감소 중">
+          <label class="option-label" for="trend_down">감소 중</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" id="trend_start" name="revenue_trend" value="초기 (매출 발생 중)">
+          <label class="option-label" for="trend_start">초기 (매출 발생 중)</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>현재 기존 대출 총액</label>
+      <select id="debt">
+        <option value="">선택해주세요</option>
+        <option value="없음">없음</option>
+        <option value="5천만원 이하">5천만원 이하</option>
+        <option value="5천~1억">5천~1억</option>
+        <option value="1억~3억">1억~3억</option>
+        <option value="3억~5억">3억~5억</option>
+        <option value="5억~10억">5억~10억</option>
+        <option value="10억 이상">10억 이상</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label>신용점수 (NICE 또는 KCB 기준)</label>
+      <select id="credit_score">
+        <option value="">선택해주세요 (모르면 '모름' 선택)</option>
+        <option value="모름">모름</option>
+        <option value="900점 이상">900점 이상 (우수)</option>
+        <option value="800~900점">800~900점 (양호)</option>
+        <option value="700~800점">700~800점 (보통)</option>
+        <option value="600~700점">600~700점 (주의)</option>
+        <option value="600점 미만">600점 미만 (위험)</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label>보유 인증 (해당 항목 모두 선택)</label>
+      <div class="options-grid">
+        <div class="option-item">
+          <input type="checkbox" id="cert_none" name="cert" value="보유 없음">
+          <label class="option-label" for="cert_none">보유 없음</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="cert_venture" name="cert" value="벤처기업 인증">
+          <label class="option-label" for="cert_venture">벤처기업 인증</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="cert_innobiz" name="cert" value="이노비즈">
+          <label class="option-label" for="cert_innobiz">이노비즈</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="cert_mainbiz" name="cert" value="메인비즈">
+          <label class="option-label" for="cert_mainbiz">메인비즈</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="cert_lab" name="cert" value="기업부설연구소">
+          <label class="option-label" for="cert_lab">기업부설연구소</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="cert_iso" name="cert" value="ISO 인증">
+          <label class="option-label" for="cert_iso">ISO 인증</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="cert_patent" name="cert" value="특허 보유">
+          <label class="option-label" for="cert_patent">특허 보유</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="cert_export" name="cert" value="수출 실적">
+          <label class="option-label" for="cert_export">수출 실적</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-prev" onclick="prevSection(3)">← 이전</button>
+      <button class="btn-next" onclick="nextSection(3)">다음 단계 →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section" id="section-4">
+    <div class="section-header">
+      <div class="section-num">Section 04</div>
+      <div class="section-title">자금 · 니즈</div>
+      <div class="section-desc">지금 가장 필요한 것을 솔직하게 입력해주세요</div>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="field-group">
+      <label>필요 자금 규모</label>
+      <select id="need_amount">
+        <option value="">선택해주세요</option>
+        <option value="5천만원 이하">5천만원 이하</option>
+        <option value="5천~1억">5천~1억</option>
+        <option value="1억~3억">1억~3억</option>
+        <option value="3억~5억">3억~5억</option>
+        <option value="5억~10억">5억~10억</option>
+        <option value="10억 이상">10억 이상</option>
+        <option value="모름">잘 모름</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label>자금 용도</label>
+      <div class="options-grid">
+        <div class="option-item">
+          <input type="checkbox" id="use_operation" name="fund_use" value="운전자금 (인건비·재료비 등)">
+          <label class="option-label" for="use_operation">운전자금</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="use_facility" name="fund_use" value="시설자금 (장비·설비)">
+          <label class="option-label" for="use_facility">시설자금 (장비·설비)</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="use_rd" name="fund_use" value="R&D·개발자금">
+          <label class="option-label" for="use_rd">R&D·개발자금</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="use_export" name="fund_use" value="수출·해외진출">
+          <label class="option-label" for="use_export">수출·해외진출</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="use_expand" name="fund_use" value="사업 확장">
+          <label class="option-label" for="use_expand">사업 확장</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" id="use_etc" name="fund_use" value="기타">
+          <label class="option-label" for="use_etc">기타</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>정책자금 신청 경험</label>
+      <div class="options-grid">
+        <div class="option-item">
+          <input type="radio" id="fund_none" name="fund_exp" value="없음">
+          <label class="option-label" for="fund_none">없음</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" id="fund_success" name="fund_exp" value="있음 (승인)">
+          <label class="option-label" for="fund_success">있음 (승인)</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" id="fund_fail" name="fund_exp" value="있음 (거절)">
+          <label class="option-label" for="fund_fail">있음 (거절)</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" id="fund_both" name="fund_exp" value="승인·거절 모두 경험">
+          <label class="option-label" for="fund_both">승인·거절 모두 경험</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>투자 유치 의향</label>
+      <div class="options-grid">
+        <div class="option-item">
+          <input type="radio" id="invest_no" name="invest" value="없음">
+          <label class="option-label" for="invest_no">없음</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" id="invest_consider" name="invest" value="고려 중">
+          <label class="option-label" for="invest_consider">고려 중</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" id="invest_yes" name="invest" value="적극적으로 원함">
+          <label class="option-label" for="invest_yes">적극적으로 원함</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-prev" onclick="prevSection(4)">← 이전</button>
+      <button class="btn-next" onclick="nextSection(4)">다음 단계 →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="section" id="section-5">
+    <div class="section-header">
+      <div class="section-num">Section 05</div>
+      <div class="section-title">성장 방향</div>
+      <div class="section-desc">마지막 단계입니다. 솔직하게 입력해주실수록 좋습니다</div>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="field-group">
+      <label>지금 제일 급한 것</label>
+      <div class="options-grid">
+        <div class="option-item">
+          <input type="radio" id="urgent_fund" name="urgent" value="자금">
+          <label class="option-label" for="urgent_fund">자금</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" id="urgent_growth" name="urgent" value="성장 방향">
+          <label class="option-label" for="urgent_growth">성장 방향</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" id="urgent_export" name="urgent" value="수출">
+          <label class="option-label" for="urgent_export">수출</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" id="urgent_rd" name="urgent" value="기술개발">
+          <label class="option-label" for="urgent_rd">기술개발</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" id="urgent_cert" name="urgent" value="인증">
+          <label class="option-label" for="urgent_cert">인증</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" id="urgent_ai" name="urgent" value="AI·자동화">
+          <label class="option-label" for="urgent_ai">AI·자동화</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>3년 후 목표 매출</label>
+      <select id="goal_revenue">
+        <option value="">선택해주세요</option>
+        <option value="현재 유지">현재 유지</option>
+        <option value="10억 미만">10억 미만</option>
+        <option value="10억~30억">10억~30억</option>
+        <option value="30억~100억">30억~100억</option>
+        <option value="100억 이상">100억 이상</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label>개발하고 싶은 기술·제품 있어요?</label>
+      <div class="options-grid">
+        <div class="option-item">
+          <input type="radio" id="tech_yes" name="tech_plan" value="있음">
+          <label class="option-label" for="tech_yes">있음</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" id="tech_no" name="tech_plan" value="없음">
+          <label class="option-label" for="tech_no">없음</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" id="tech_consider" name="tech_plan" value="고려 중">
+          <label class="option-label" for="tech_consider">고려 중</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>수출 계획</label>
+      <div class="options-grid">
+        <div class="option-item">
+          <input type="radio" id="export_no" name="export_plan" value="없음">
+          <label class="option-label" for="export_no">없음</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" id="export_consider" name="export_plan" value="고려 중">
+          <label class="option-label" for="export_consider">고려 중</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" id="export_active" name="export_plan" value="이미 진행 중">
+          <label class="option-label" for="export_active">이미 진행 중</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>지금 가장 큰 고민</label>
+      <textarea id="main_concern" placeholder="솔직하게 적어주세요. 이 내용이 진단의 핵심입니다."></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-prev" onclick="prevSection(5)">← 이전</button>
+      <button class="btn-next" onclick="submitDiagnosis()">🔍 진단 시작</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- RESULT -->
+<div class="result-container" id="result-container">
+  <div class="result-layout">
+
+    <div id="loading-box" class="loading-box">
+      <div class="loading-ring"></div>
+      <div class="loading-text">기업 진단 분석 중</div>
+      <div class="loading-sub">AI가 입력 데이터를 분석하고 있습니다<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></div>
+    </div>
+
+    <div id="result-content" style="display:none">
+
+      <div class="result-header">
+        <div class="result-company" id="result-company-name"></div>
+        <div class="result-title">기업 진단 리포트</div>
+        <div class="result-date" id="result-date"></div>
+        <div class="level-badge">
+          <div class="level-letter" id="level-letter">-</div>
+          <div>
+            <div class="level-name" id="level-name">-</div>
+            <div class="level-desc" id="level-desc">-</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-grid">
+        <div class="result-card">
+          <div class="result-card-title">📊 레벨 점수</div>
+          <div class="result-card-content">
+            <div class="score-display">
+              <span class="score-num" id="score-num">0</span>
+              <span class="score-total">/ 25</span>
+            </div>
+            <div class="score-bars" id="score-bars"></div>
+          </div>
+        </div>
+        <div class="result-card">
+          <div class="result-card-title">💡 추천 세트</div>
+          <div class="result-card-content" id="recommend-sets"></div>
+        </div>
+        <div class="result-card">
+          <div class="result-card-title">✅ 가능한 자금 기관</div>
+          <div class="result-card-content" id="possible-funds"></div>
+        </div>
+        <div class="result-card">
+          <div class="result-card-title">⚠️ 리스크 요인</div>
+          <div class="result-card-content" id="risk-factors"></div>
+        </div>
+      </div>
+
+      <div class="result-full">
+        <div class="result-full-title">📋 종합 분석 및 성장 로드맵</div>
+        <div class="result-full-content" id="full-analysis"></div>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn-restart" onclick="restart()">← 다시 진단하기</button>
+        <button class="btn-print" onclick="window.print()">🖨️ 인쇄 / PDF 저장</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+let currentSection = 1;
+const totalSections = 5;
+
+function updateProgress(section) {
+  for (let i = 1; i <= totalSections; i++) {
+    const stepEl = document.getElementById(`step-${i}`);
+    stepEl.classList.remove('active', 'done');
+    if (i < section) stepEl.classList.add('done');
+    else if (i === section) stepEl.classList.add('active');
+  }
+}
+
+function nextSection(current) {
+  const section = document.getElementById(`section-${current}`);
+  const next = document.getElementById(`section-${current + 1}`);
+  if (next) {
+    section.classList.remove('active');
+    next.classList.add('active');
+    currentSection = current + 1;
+    updateProgress(currentSection);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function prevSection(current) {
+  const section = document.getElementById(`section-${current}`);
+  const prev = document.getElementById(`section-${current - 1}`);
+  if (prev) {
+    section.classList.remove('active');
+    prev.classList.add('active');
+    currentSection = current - 1;
+    updateProgress(currentSection);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function getChecked(name) {
+  const checked = document.querySelectorAll(`input[name="${name}"]:checked`);
+  return Array.from(checked).map(el => el.value).join(', ') || '미선택';
+}
+
+function getRadio(name) {
+  const checked = document.querySelector(`input[name="${name}"]:checked`);
+  return checked ? checked.value : '미선택';
+}
+
+function collectData() {
+  return {
+    company_name: document.getElementById('company_name').value || '미입력',
+    ceo_name: document.getElementById('ceo_name').value || '미입력',
+    industry: document.getElementById('industry').value || '미선택',
+    biz_type: document.getElementById('biz_type').value || '미선택',
+    biz_age: document.getElementById('biz_age').value || '미선택',
+    employees: document.getElementById('employees').value || '미선택',
+    product: document.getElementById('product').value || '미입력',
+    customer_type: getChecked('customer_type'),
+    ceo_age: document.getElementById('ceo_age').value || '미선택',
+    ceo_career: document.getElementById('ceo_career').value || '미선택',
+    ceo_type: getChecked('ceo_type'),
+    other_biz: getRadio('other_biz'),
+    credit_issue: getChecked('credit_issue'),
+    ceo_strength: document.getElementById('ceo_strength').value || '미입력',
+    revenue: document.getElementById('revenue').value || '미선택',
+    revenue_trend: getRadio('revenue_trend'),
+    debt: document.getElementById('debt').value || '미선택',
+    credit_score: document.getElementById('credit_score').value || '미선택',
+    certifications: getChecked('cert'),
+    need_amount: document.getElementById('need_amount').value || '미선택',
+    fund_use: getChecked('fund_use'),
+    fund_exp: getRadio('fund_exp'),
+    invest: getRadio('invest'),
+    urgent: getRadio('urgent'),
+    goal_revenue: document.getElementById('goal_revenue').value || '미선택',
+    tech_plan: getRadio('tech_plan'),
+    export_plan: getRadio('export_plan'),
+    main_concern: document.getElementById('main_concern').value || '미입력',
+  };
+}
+
+async function submitDiagnosis() {
+  const data = collectData();
+
+  document.querySelector('.main-layout').style.display = 'none';
+  document.querySelector('.progress-wrap').style.display = 'none';
+  document.querySelector('.hero').style.display = 'none';
+  document.getElementById('result-container').classList.add('active');
+  document.getElementById('loading-box').style.display = 'block';
+  document.getElementById('result-content').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const prompt = `
+당신은 루아솔루션스의 기업 성장 컨설턴트입니다. 아래 기업 진단 데이터를 분석하여 JSON 형식으로 결과를 반환하세요.
+
+## 기업 진단 데이터
+- 기업명: ${data.company_name}
+- 대표자: ${data.ceo_name}
+- 업종: ${data.industry}
+- 사업자 유형: ${data.biz_type}
+- 업력: ${data.biz_age}
+- 직원 수: ${data.employees}
+- 주요 제품/서비스: ${data.product}
+- 거래처 유형: ${data.customer_type}
+- 대표 연령대: ${data.ceo_age}
+- 업종 경력: ${data.ceo_career}
+- 대표 특성: ${data.ceo_type}
+- 타 법인 보유: ${data.other_biz}
+- 신용 이슈: ${data.credit_issue}
+- 대표 강점: ${data.ceo_strength}
+- 연매출: ${data.revenue}
+- 매출 추이: ${data.revenue_trend}
+- 기존 대출: ${data.debt}
+- 신용점수: ${data.credit_score}
+- 보유 인증: ${data.certifications}
+- 필요 자금: ${data.need_amount}
+- 자금 용도: ${data.fund_use}
+- 정책자금 경험: ${data.fund_exp}
+- 투자 의향: ${data.invest}
+- 가장 급한 것: ${data.urgent}
+- 목표 매출: ${data.goal_revenue}
+- 기술 개발 계획: ${data.tech_plan}
+- 수출 계획: ${data.export_plan}
+- 주요 고민: ${data.main_concern}
+
+## 분석 기준
+
+### 레벨 점수 (각 5점, 총 25점)
+1. 재무구조: 매출규모, 대출비율, 신용점수, 매출추이 종합
+2. 대표역량: 업종경력, 특성(청년/여성 등), 신용이슈, 강점
+3. 기술인증: 보유인증, 특허, 기술개발계획
+4. 성장가능성: 매출추이, 목표, 수출계획, 투자의향
+5. 자금조달여건: 신용점수, 대출현황, 정책자금경험
+
+### 레벨 판정
+- 20~25점: S레벨 (고도화 단계)
+- 15~19점: A레벨 (성장 단계)
+- 10~14점: B레벨 (안정화 단계)
+- 5~9점: C레벨 (기초 정비 단계)
+
+### 추천 세트
+- 세트1: 진단·자금 패키지
+- 세트2: 성장 구조 패키지
+- 세트3: 수출 패키지
+- 세트4: R&D·디딤돌 패키지
+- 세트5: TIPS 트랙
+- 세트6: AI·혁신 패키지
+
+### 가능한 자금 기관
+기보(기술보증기금), 신보(신용보증기금), 중진공, 소진공, 무보, 제1금융권, 디딤돌R&D, TIPS, 청년전용자금, 수출바우처 중 가능한 것과 불가능한 것 분류
+
+## 반환 형식 (JSON만 반환, 다른 텍스트 없이)
+{
+  "level": "A",
+  "level_name": "성장 단계",
+  "level_desc": "인증·R&D·수출로 도약할 준비",
+  "total_score": 17,
+  "scores": {
+    "재무구조": 3,
+    "대표역량": 4,
+    "기술인증": 3,
+    "성장가능성": 4,
+    "자금조달여건": 3
+  },
+  "recommended_sets": "세트1 (진단·자금) → 세트2 (성장 구조) → 세트4 (R&D)",
+  "possible_funds": "기보 ○, 신보 ○, 중진공 △, 소진공 ○, 무보 △, 디딤돌 ○",
+  "risk_factors": "매출 대비 대출 비율 주의\n신용점수 개선 필요\n인증 보유 없어 자금 한도 제한",
+  "analysis": "종합 분석 내용 (500자 이상, 현실적이고 구체적으로):\n\n[현재 상태]\n...\n\n[강점]\n...\n\n[지금 당장 해야 할 것]\n1. ...\n2. ...\n3. ...\n\n[3년 성장 로드맵]\n0~6개월: ...\n6개월~1년: ...\n1~3년: ..."
+}`;
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+
+    const result = await response.json();
+    const text = result.content[0].text;
+
+    let parsed;
+    try {
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      parsed = JSON.parse(jsonMatch ? jsonMatch[0] : text);
+    } catch(e) {
+      parsed = {
+        level: "B", level_name: "안정화 단계", level_desc: "자금·인증·BM 정비 필요",
+        total_score: 12,
+        scores: { "재무구조": 2, "대표역량": 3, "기술인증": 2, "성장가능성": 3, "자금조달여건": 2 },
+        recommended_sets: "세트1 (진단·자금) → 세트2 (성장 구조)",
+        possible_funds: "신보 ○, 소진공 ○, 기보 △, 중진공 △",
+        risk_factors: "진단 데이터를 바탕으로 분석 중\n직접 상담을 통해 정확한 진단을 받아보세요",
+        analysis: "입력하신 정보를 바탕으로 기본 진단을 완료했습니다.\n\n더 정확한 분석을 위해 루아솔루션스와 직접 상담을 진행해주세요.\n\n[지금 당장 해야 할 것]\n1. 재무제표 준비\n2. 신용점수 확인\n3. 루아솔루션스 무료 상담 신청"
+      };
+    }
+
+    renderResult(data, parsed);
+
+  } catch(err) {
+    const fallback = {
+      level: "B", level_name: "안정화 단계", level_desc: "자금·인증·BM 정비 필요",
+      total_score: 12,
+      scores: { "재무구조": 2, "대표역량": 3, "기술인증": 2, "성장가능성": 3, "자금조달여건": 2 },
+      recommended_sets: "세트1 (진단·자금) → 세트2 (성장 구조)",
+      possible_funds: "신보 ○, 소진공 ○, 기보 △",
+      risk_factors: "네트워크 오류로 상세 분석 불가\n루아솔루션스에 직접 문의해주세요",
+      analysis: "네트워크 상태로 인해 상세 분석이 일시적으로 어렵습니다.\n루아솔루션스(010-7659-9446)로 연락주시면 직접 상담해드리겠습니다."
+    };
+    renderResult(data, fallback);
+  }
+}
+
+function renderResult(data, parsed) {
+  document.getElementById('loading-box').style.display = 'none';
+  document.getElementById('result-content').style.display = 'block';
+
+  document.getElementById('result-company-name').textContent = `${data.company_name} · ${data.ceo_name} 대표`;
+  document.getElementById('result-date').textContent = `진단일: ${new Date().toLocaleDateString('ko-KR')}`;
+  document.getElementById('level-letter').textContent = parsed.level;
+  document.getElementById('level-name').textContent = parsed.level_name;
+  document.getElementById('level-desc').textContent = parsed.level_desc;
+  document.getElementById('score-num').textContent = parsed.total_score;
+
+  const barsHtml = Object.entries(parsed.scores).map(([key, val]) => `
+    <div class="score-bar-item">
+      <div class="score-bar-label"><span>${key}</span><span>${val}/5</span></div>
+      <div class="score-bar-track"><div class="score-bar-fill" style="width:${val/5*100}%"></div></div>
+    </div>
+  `).join('');
+  document.getElementById('score-bars').innerHTML = barsHtml;
+
+  document.getElementById('recommend-sets').textContent = parsed.recommended_sets;
+  document.getElementById('possible-funds').textContent = parsed.possible_funds;
+  document.getElementById('risk-factors').textContent = parsed.risk_factors;
+  document.getElementById('full-analysis').textContent = parsed.analysis;
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function restart() {
+  location.reload();
+}
+</script>
+</body>
+</html>
